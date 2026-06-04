@@ -1,0 +1,2 @@
+public class tess22 {
+}
