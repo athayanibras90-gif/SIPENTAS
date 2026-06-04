@@ -35,6 +35,7 @@ public class Mahasiswa {
         System.out.println("Stok apel: " + stokBuah.get("apel"));
         System.out.println("Stok apel: " + stokBuah.get("mangga"));
 
+
     }
 
 }
