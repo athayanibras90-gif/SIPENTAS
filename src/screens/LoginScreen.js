@@ -1,26 +1,38 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, Platform } from 'react-native'; // <-- Tambahin Platform di sini
 
 export default function LoginScreen({ onBack, onLoginSuccess }) {
-  // State untuk menampung ketikan user
+
   const [nim, setNim] = useState('');
   const [password, setPassword] = useState('');
 
-  // Fungsi handle login dummy
   const handleLogin = () => {
     // Validasi input kosong
     if (!nim || !password) {
-      Alert.alert('Error', 'NIM dan Password wajib diisi, Cuy!');
+      if (Platform.OS === 'web') {
+        alert('NIM dan Password wajib diisi, Cuy!');
+      } else {
+        Alert.alert('Error', 'NIM dan Password wajib diisi, Cuy!');
+      }
       return;
     }
 
-    // Simulasi pengecekan Dummy Data
+    // DUMMY DATA YANG HARUS DIISI SAMA BACKEND
     if (nim === '123' && password === 'admin') {
-      Alert.alert('Sukses', 'Login Berhasil! Selamat datang di SIPENTAS.', [
-        { text: 'OK', onPress: () => onLoginSuccess() } // Begitu diklik OK, langsung pindah ke Beranda
-      ]);
+      if (Platform.OS === 'web') {
+        alert('Login Berhasil! Selamat datang di SIPENTAS.');
+        onLoginSuccess();
+      } else {
+        Alert.alert('Sukses', 'Login Berhasil! Selamat datang di SIPENTAS.', [
+          { text: 'OK', onPress: () => onLoginSuccess() } 
+        ]);
+      }
     } else {
-      Alert.alert('Gagal', 'NIM atau Password salah. Coba ketik NIM: 123, Pass: admin');
+      if (Platform.OS === 'web') {
+        alert('NIM atau Password salah. Coba ketik NIM: 123, Pass: admin');
+      } else {
+        Alert.alert('Gagal', 'NIM atau Password salah');
+      }
     }
   };
 

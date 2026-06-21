@@ -1,11 +1,73 @@
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Modal, TextInput, Alert } from 'react-native';
 
 export default function BerandaScreen({ onLogout }) {
-  // Anggap aja ini data dummy mahasiswa yang berhasil login
-  const namaMahasiswa = "Athaya Nibras";
-  const nimMahasiswa = "A11.2026.127"; 
+  const namaMahasiswa = "Mahasigma";
+  const nimMahasiswa = "21072026"; 
 
+  // State utama untuk nyimpen data laporan secara dinamis
+  const [aktivitas, setAktivitas] = useState([]);
+
+  // State untuk kontrol modal input
+  const [modalVisible, setModalVisible] = useState(false);
+  const [inputLaporan, setInputLaporan] = useState('');
+
+  // State untuk nentuin halaman aktif ('beranda' atau 'riwayat')
+  const [currentView, setCurrentView] = useState('beranda'); 
+
+  // Fungsi buat nambahin laporan baru
+  const handleTambahPengaduan = () => {
+    if (inputLaporan.trim() === '') {
+      Alert.alert('Error', 'Isi laporan dulu, bro!');
+      return;
+    }
+
+    const laporanBaru = {
+      id: Date.now().toString(),
+      judul: inputLaporan,
+      status: 'Menunggu Konfirmasi',
+      tanggal: '21 Juni 2026', 
+    };
+
+    setAktivitas([laporanBaru, ...aktivitas]);
+    setInputLaporan('');
+    setModalVisible(false);
+    Alert.alert('Sukses', 'Pengaduan lo berhasil dikirim!');
+  };
+
+  // ==========================================
+  // 1. TAMPILAN VIEW RIWAYAT LAPORAN
+  // ==========================================
+  if (currentView === 'riwayat') {
+    return (
+      <View style={styles.container}>
+        <View style={styles.headerRiwayat}>
+          <TouchableOpacity onPress={() => setCurrentView('beranda')} style={styles.backButton}>
+            <Text style={styles.backIcon}>{"<"}</Text>
+          </TouchableOpacity>
+          <Text style={styles.headerTitleRiwayat}>Riwayat Laporan Anda</Text>
+        </View>
+
+        <ScrollView contentContainerStyle={styles.contentContainer}>
+          {aktivitas.length === 0 ? (
+            <Text style={styles.emptyText}>Belum ada laporan yang dibuat.</Text>
+          ) : (
+            aktivitas.map((item) => (
+              <View key={item.id} style={styles.statusCard}>
+                <Text style={styles.statusTitle}>{item.judul}</Text>
+                <Text style={styles.statusBadgePending}>{item.status}</Text>
+                <Text style={styles.statusDate}>ID Laporan: #{item.id.slice(-5)} • {item.tanggal}</Text>
+              </View>
+            ))
+          )}
+        </ScrollView>
+      </View>
+    );
+  }
+
+  // ==========================================
+  // 2. TAMPILAN VIEW BERANDA UTAMA
+  // ==========================================
   return (
     <View style={styles.container}>
       {/* Header Wilayah Atas */}
@@ -16,17 +78,16 @@ export default function BerandaScreen({ onLogout }) {
       </View>
 
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        {/* Judul Menu */}
         <Text style={styles.sectionTitle}>Menu SIPENTAS</Text>
 
         {/* Grid Tombol Menu Utama */}
         <View style={styles.menuGrid}>
-          <TouchableOpacity style={styles.menuCard} onPress={() => alert('Ke Form Pengaduan')}>
+          <TouchableOpacity style={styles.menuCard} onPress={() => setModalVisible(true)}>
             <Text style={styles.menuIcon}>📝</Text>
             <Text style={styles.menuLabel}>Buat Pengaduan</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuCard} onPress={() => alert('Ke Riwayat Laporan')}>
+          <TouchableOpacity style={styles.menuCard} onPress={() => setCurrentView('riwayat')}>
             <Text style={styles.menuIcon}>⏳</Text>
             <Text style={styles.menuLabel}>Riwayat Laporan</Text>
           </TouchableOpacity>
@@ -34,17 +95,46 @@ export default function BerandaScreen({ onLogout }) {
 
         {/* Status Singkat Pengaduan Terakhir */}
         <Text style={styles.sectionTitle}>Aktivitas Terakhir</Text>
-        <View style={styles.statusCard}>
-          <Text style={styles.statusTitle}>Laporan AC Ruang D.3.2 Mati</Text>
-          <Text style={styles.statusBadgePending}>Menunggu Konfirmasi</Text>
-          <Text style={styles.statusDate}>Dikirim: 21 Juni 2026</Text>
-        </View>
+        
+        {aktivitas.slice(0, 2).map((item) => (
+          <View key={item.id} style={styles.statusCard}>
+            <Text style={styles.statusTitle}>{item.judul}</Text>
+            <Text style={styles.statusBadgePending}>{item.status}</Text>
+            <Text style={styles.statusDate}>Dikirim: {item.tanggal}</Text>
+          </View>
+        ))}
 
-        {/* Tombol Keluar / Keluar Akun */}
         <TouchableOpacity style={styles.buttonLogout} onPress={onLogout}>
-          <Text style={styles.logoutText}>Keluar dari Sistem</Text>
+          <Text style={styles.logoutText}>Keluar</Text>
         </TouchableOpacity>
       </ScrollView>
+
+      {/* MODAL FORM INPUT PENGADUAN */}
+      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Tulis Pengaduan Fasilitas</Text>
+            
+            <TextInput
+              style={styles.textInput}
+              placeholder="Tuliskan masalah yang ingin Anda laporkan..."
+              value={inputLaporan}
+              onChangeText={setInputLaporan}
+              multiline
+            />
+
+            <View style={styles.modalButtonContainer}>
+              <TouchableOpacity style={[styles.modalButton, styles.buttonBatal]} onPress={() => setModalVisible(false)}>
+                <Text style={styles.buttonTextBatal}>Batal</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={[styles.modalButton, styles.buttonKirim]} onPress={handleTambahPengaduan}>
+                <Text style={styles.buttonTextKirim}>Kirim</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -60,6 +150,28 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     paddingTop: 50,
+  },
+  headerRiwayat: {
+    backgroundColor: '#4A00E0',
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    paddingTop: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backButton: {
+    marginRight: 15,
+    padding: 5,
+  },
+  backIcon: {
+    color: '#FFF',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  headerTitleRiwayat: {
+    color: '#FFF',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   welcomeText: {
     color: '#E0D4FF',
@@ -118,7 +230,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     elevation: 1,
-    marginBottom: 35,
+    marginBottom: 15,
   },
   statusTitle: {
     fontSize: 14,
@@ -149,10 +261,69 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 20,
   },
   logoutText: {
     color: '#FF4D4D',
     fontSize: 14,
     fontWeight: 'bold',
+  },
+  emptyText: {
+    textAlign: 'center',
+    color: '#999',
+    marginTop: 40,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    padding: 20,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    color: '#333',
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: '#CCC',
+    borderRadius: 8,
+    padding: 12,
+    height: 100,
+    textAlignVertical: 'top',
+    marginBottom: 20,
+  },
+  modalButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  modalButton: {
+    flex: 1,
+    height: 44,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonBatal: {
+    marginRight: 10,
+    backgroundColor: '#F1F3F5',
+  },
+  buttonKirim: {
+    backgroundColor: '#4A00E0',
+  },
+  buttonTextBatal: {
+    color: '#666',
+    fontWeight: '600',
+  },
+  buttonTextKirim: {
+    color: '#FFF',
+    fontWeight: '600',
   },
 });
