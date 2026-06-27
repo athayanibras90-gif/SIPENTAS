@@ -21,7 +21,6 @@ public class UserService {
         return userRepository.findByNimAndPassword(nim, password);
     }
 
-
     public Optional<User> findByNim(String nim) {
         return userRepository.findByNim(nim);
     }
