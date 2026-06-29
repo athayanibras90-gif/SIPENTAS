@@ -7,18 +7,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;  // ← TAMBAHKAN IMPORT INI!
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "*")
 public class UserController {
 
-
     @Autowired
     private UserService userService;
 
-    // ========== REGISTER (Tanpa token) ==========
+    // 🔑 API Key yang valid (hardcode sementara)
+    private final String VALID_API_KEY = "SIPENTAS-APP-FIXED-KEY";
+
+    // ========== HELPER: VALIDASI API KEY ==========
+    private boolean validateApiKey(String apiKey) {
+        return apiKey != null && apiKey.equals(VALID_API_KEY);
+    }
+
+    // ========== REGISTER (Tidak butuh API Key & Token) ==========
     @PostMapping("/register")
     public Map<String, Object> register(@RequestBody User user) {
         Map<String, Object> response = new HashMap<>();
@@ -34,23 +41,32 @@ public class UserController {
         return response;
     }
 
-
-    // ========== LOGIN (Tidak butuh token) ==========
+    // ========== LOGIN (Butuh API Key, Tidak butuh Token) ==========
     @PostMapping("/login")
-    public Map<String, Object> login(@RequestBody Map<String, String> request) {
+    public Map<String, Object> login(
+            @RequestBody Map<String, String> request,
+            @RequestHeader(value = "X-API-Key", required = false) String apiKey) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        // 🔑 VALIDASI API KEY
+        if (!validateApiKey(apiKey)) {
+            response.put("success", false);
+            response.put("message", "API Key tidak valid");
+            return response;
+        }
+
         String nim = request.get("nim");
         String password = request.get("password");
-        Map<String, Object> response = new HashMap<>();
 
         Optional<User> userOptional = userService.login(nim, password);
         if (userOptional.isPresent()) {
-            //Generate token
+            // 🎫 Generate Token
             String token = generateToken(nim);
-
             response.put("success", true);
             response.put("message", "Login berhasil");
             response.put("nim", nim);
-            response.put("token", token);  // ← KIRIM TOKEN!
+            response.put("token", token);
         } else {
             response.put("success", false);
             response.put("message", "NIM atau password salah");
@@ -58,15 +74,23 @@ public class UserController {
         return response;
     }
 
-    // ========== GET USER BY NIM (Butuh token) ==========
+    // ========== GET USER BY NIM (Butuh API Key + Token) ==========
     @GetMapping("/{nim}")
     public Map<String, Object> getUser(
             @PathVariable String nim,
+            @RequestHeader(value = "X-API-Key", required = false) String apiKey,
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
 
         Map<String, Object> response = new HashMap<>();
 
-        // 🔑 Validasi token
+        // 🔑 VALIDASI API KEY
+        if (!validateApiKey(apiKey)) {
+            response.put("success", false);
+            response.put("message", "API Key tidak valid");
+            return response;
+        }
+
+        // 🎫 VALIDASI TOKEN
         if (!validateToken(authHeader)) {
             response.put("success", false);
             response.put("message", "Token tidak valid atau tidak ada");
@@ -84,14 +108,22 @@ public class UserController {
         return response;
     }
 
-    // ========== GET ALL USERS (Butuh token) ==========
+    // ========== GET ALL USERS (Butuh API Key + Token) ==========
     @GetMapping("/all")
     public Map<String, Object> getAllUsers(
+            @RequestHeader(value = "X-API-Key", required = false) String apiKey,
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
 
         Map<String, Object> response = new HashMap<>();
 
-        // 🔑 Validasi token
+        // 🔑 VALIDASI API KEY
+        if (!validateApiKey(apiKey)) {
+            response.put("success", false);
+            response.put("message", "API Key tidak valid");
+            return response;
+        }
+
+        // 🎫 VALIDASI TOKEN
         if (!validateToken(authHeader)) {
             response.put("success", false);
             response.put("message", "Token tidak valid atau tidak ada");
@@ -105,16 +137,24 @@ public class UserController {
         return response;
     }
 
-    // ========== UPDATE PASSWORD (Butuh token) ==========
+    // ========== UPDATE PASSWORD (Butuh API Key + Token) ==========
     @PutMapping("/{nim}")
     public Map<String, Object> updatePassword(
             @PathVariable String nim,
             @RequestBody Map<String, String> request,
+            @RequestHeader(value = "X-API-Key", required = false) String apiKey,
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
 
         Map<String, Object> response = new HashMap<>();
 
-        // 🔑 Validasi token
+        // 🔑 VALIDASI API KEY
+        if (!validateApiKey(apiKey)) {
+            response.put("success", false);
+            response.put("message", "API Key tidak valid");
+            return response;
+        }
+
+        // 🎫 VALIDASI TOKEN
         if (!validateToken(authHeader)) {
             response.put("success", false);
             response.put("message", "Token tidak valid atau tidak ada");
@@ -134,15 +174,23 @@ public class UserController {
         return response;
     }
 
-    // ========== DELETE USER (Butuh token) ==========
+    // ========== DELETE USER (Butuh API Key + Token) ==========
     @DeleteMapping("/{nim}")
     public Map<String, Object> deleteUser(
             @PathVariable String nim,
+            @RequestHeader(value = "X-API-Key", required = false) String apiKey,
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
 
         Map<String, Object> response = new HashMap<>();
 
-        // 🔑 Validasi token
+        // 🔑 VALIDASI API KEY
+        if (!validateApiKey(apiKey)) {
+            response.put("success", false);
+            response.put("message", "API Key tidak valid");
+            return response;
+        }
+
+        // 🎫 VALIDASI TOKEN
         if (!validateToken(authHeader)) {
             response.put("success", false);
             response.put("message", "Token tidak valid atau tidak ada");
@@ -162,7 +210,6 @@ public class UserController {
 
     // ========== HELPER: GENERATE TOKEN ==========
     private String generateToken(String nim) {
-        // Format: SIPENTAS-[NIM]-[TIMESTAMP]
         return "SIPENTAS-" + nim + "-" + System.currentTimeMillis();
     }
 
