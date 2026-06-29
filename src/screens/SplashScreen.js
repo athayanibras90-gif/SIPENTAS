@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 export default function SplashScreen() {
-  // Gak perlu ada setTimeout yang manggil onFinish() lagi di sini,
-  // karena perpindahan 3 detik sudah diatur sama App.js kita!
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.replace('Login');
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [navigation]);
 
   return (
     <View style={styles.container}>

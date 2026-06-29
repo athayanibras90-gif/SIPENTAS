@@ -1,7 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-export default function LandingScreen({ onGetStarted }) {
+export default function LandingScreen() {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <Text style={styles.welcomeTitle}>Selamat Datang di SIPENTAS</Text>
@@ -9,9 +12,9 @@ export default function LandingScreen({ onGetStarted }) {
         Kelola masalah kelas dan lingkungan kampus Anda dengan lebih mudah dan cepat.
       </Text>
       
-      <TouchableOpacity style={styles.button} onPress={onGetStarted}>
-      <Text style={styles.buttonText}>Mulai Sekarang</Text>
-    </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignIn')}>
+        <Text style={styles.buttonText}>Mulai Sekarang</Text>
+      </TouchableOpacity>
     </View>
   );
 }

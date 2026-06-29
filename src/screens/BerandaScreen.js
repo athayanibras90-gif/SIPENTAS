@@ -1,48 +1,68 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Modal, TextInput, Alert } from 'react-native';
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Modal,
+  TextInput,
+  Alert,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { logout } from "../utils/storage";
 
-export default function BerandaScreen({ onLogout }) {
+export default function BerandaScreen() {
+  const navigation = useNavigation();
   const namaMahasiswa = "Mahasigma";
-  const nimMahasiswa = "21072026"; 
+  const nimMahasiswa = "21072026";
+
+  const handleLogout = async () => {
+    await logout();
+    navigation.replace("Login");
+  };
 
   // State utama untuk nyimpen data laporan secara dinamis
   const [aktivitas, setAktivitas] = useState([]);
 
   // State untuk kontrol modal input
   const [modalVisible, setModalVisible] = useState(false);
-  const [inputLaporan, setInputLaporan] = useState('');
+  const [inputLaporan, setInputLaporan] = useState("");
 
   // State untuk nentuin halaman aktif ('beranda' atau 'riwayat')
-  const [currentView, setCurrentView] = useState('beranda'); 
+  const [currentView, setCurrentView] = useState("beranda");
 
   // Fungsi buat nambahin laporan baru
   const handleTambahPengaduan = () => {
-    if (inputLaporan.trim() === '') {
-      Alert.alert('Error', 'Isi laporan dulu, bro!');
+    if (inputLaporan.trim() === "") {
+      Alert.alert("Error", "Isi laporan dulu, bro!");
       return;
     }
 
     const laporanBaru = {
       id: Date.now().toString(),
       judul: inputLaporan,
-      status: 'Menunggu Konfirmasi',
-      tanggal: '21 Juni 2026', 
+      status: "Menunggu Konfirmasi",
+      tanggal: "21 Juni 2026",
     };
 
     setAktivitas([laporanBaru, ...aktivitas]);
-    setInputLaporan('');
+    setInputLaporan("");
     setModalVisible(false);
-    Alert.alert('Sukses', 'Pengaduan lo berhasil dikirim!');
+    Alert.alert("Sukses", "Pengaduan lo berhasil dikirim!");
   };
 
   // ==========================================
   // 1. TAMPILAN VIEW RIWAYAT LAPORAN
   // ==========================================
-  if (currentView === 'riwayat') {
+  if (currentView === "riwayat") {
     return (
       <View style={styles.container}>
         <View style={styles.headerRiwayat}>
-          <TouchableOpacity onPress={() => setCurrentView('beranda')} style={styles.backButton}>
+          <TouchableOpacity
+            onPress={() => setCurrentView("beranda")}
+            style={styles.backButton}
+          >
             <Text style={styles.backIcon}>{"<"}</Text>
           </TouchableOpacity>
           <Text style={styles.headerTitleRiwayat}>Riwayat Laporan Anda</Text>
@@ -56,7 +76,9 @@ export default function BerandaScreen({ onLogout }) {
               <View key={item.id} style={styles.statusCard}>
                 <Text style={styles.statusTitle}>{item.judul}</Text>
                 <Text style={styles.statusBadgePending}>{item.status}</Text>
-                <Text style={styles.statusDate}>ID Laporan: #{item.id.slice(-5)} • {item.tanggal}</Text>
+                <Text style={styles.statusDate}>
+                  ID Laporan: #{item.id.slice(-5)} • {item.tanggal}
+                </Text>
               </View>
             ))
           )}
@@ -82,12 +104,18 @@ export default function BerandaScreen({ onLogout }) {
 
         {/* Grid Tombol Menu Utama */}
         <View style={styles.menuGrid}>
-          <TouchableOpacity style={styles.menuCard} onPress={() => setModalVisible(true)}>
+          <TouchableOpacity
+            style={styles.menuCard}
+            onPress={() => setModalVisible(true)}
+          >
             <Text style={styles.menuIcon}>📝</Text>
             <Text style={styles.menuLabel}>Buat Pengaduan</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuCard} onPress={() => setCurrentView('riwayat')}>
+          <TouchableOpacity
+            style={styles.menuCard}
+            onPress={() => setCurrentView("riwayat")}
+          >
             <Text style={styles.menuIcon}>⏳</Text>
             <Text style={styles.menuLabel}>Riwayat Laporan</Text>
           </TouchableOpacity>
@@ -95,7 +123,7 @@ export default function BerandaScreen({ onLogout }) {
 
         {/* Status Singkat Pengaduan Terakhir */}
         <Text style={styles.sectionTitle}>Aktivitas Terakhir</Text>
-        
+
         {aktivitas.slice(0, 2).map((item) => (
           <View key={item.id} style={styles.statusCard}>
             <Text style={styles.statusTitle}>{item.judul}</Text>
@@ -104,8 +132,10 @@ export default function BerandaScreen({ onLogout }) {
           </View>
         ))}
 
-        <TouchableOpacity style={styles.buttonLogout} onPress={onLogout}>
-          <Text style={styles.logoutText}>Keluar</Text>
+        <TouchableOpacity style={styles.buttonLogout} onPress={handleLogout}>
+          <Text style={styles.logoutText}>
+            Keluar
+          </Text>
         </TouchableOpacity>
       </ScrollView>
 
@@ -114,7 +144,7 @@ export default function BerandaScreen({ onLogout }) {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Tulis Pengaduan Fasilitas</Text>
-            
+
             <TextInput
               style={styles.textInput}
               placeholder="Tuliskan masalah yang ingin Anda laporkan..."
@@ -124,11 +154,17 @@ export default function BerandaScreen({ onLogout }) {
             />
 
             <View style={styles.modalButtonContainer}>
-              <TouchableOpacity style={[styles.modalButton, styles.buttonBatal]} onPress={() => setModalVisible(false)}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.buttonBatal]}
+                onPress={() => setModalVisible(false)}
+              >
                 <Text style={styles.buttonTextBatal}>Batal</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={[styles.modalButton, styles.buttonKirim]} onPress={handleTambahPengaduan}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.buttonKirim]}
+                onPress={handleTambahPengaduan}
+              >
                 <Text style={styles.buttonTextKirim}>Kirim</Text>
               </TouchableOpacity>
             </View>
@@ -142,49 +178,49 @@ export default function BerandaScreen({ onLogout }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: "#F8F9FA",
   },
   header: {
-    backgroundColor: '#4A00E0',
+    backgroundColor: "#4A00E0",
     padding: 30,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     paddingTop: 50,
   },
   headerRiwayat: {
-    backgroundColor: '#4A00E0',
+    backgroundColor: "#4A00E0",
     paddingHorizontal: 20,
     paddingBottom: 20,
     paddingTop: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   backButton: {
     marginRight: 15,
     padding: 5,
   },
   backIcon: {
-    color: '#FFF',
+    color: "#FFF",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   headerTitleRiwayat: {
-    color: '#FFF',
+    color: "#FFF",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   welcomeText: {
-    color: '#E0D4FF',
+    color: "#E0D4FF",
     fontSize: 14,
   },
   nameText: {
-    color: '#FFF',
+    color: "#FFF",
     fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 4,
   },
   nimText: {
-    color: '#E0D4FF',
+    color: "#E0D4FF",
     fontSize: 14,
     marginTop: 2,
   },
@@ -193,24 +229,24 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginBottom: 15,
     marginTop: 10,
   },
   menuGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 25,
   },
   menuCard: {
-    backgroundColor: '#FFF',
-    width: '47%',
+    backgroundColor: "#FFF",
+    width: "47%",
     padding: 20,
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
@@ -221,12 +257,12 @@ const styles = StyleSheet.create({
   },
   menuLabel: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#444',
-    textAlign: 'center',
+    fontWeight: "600",
+    color: "#444",
+    textAlign: "center",
   },
   statusCard: {
-    backgroundColor: '#FFF',
+    backgroundColor: "#FFF",
     padding: 16,
     borderRadius: 12,
     elevation: 1,
@@ -234,96 +270,96 @@ const styles = StyleSheet.create({
   },
   statusTitle: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
+    fontWeight: "600",
+    color: "#333",
   },
   statusBadgePending: {
-    backgroundColor: '#FFEFAA',
-    color: '#A07400',
-    alignSelf: 'flex-start',
+    backgroundColor: "#FFEFAA",
+    color: "#A07400",
+    alignSelf: "flex-start",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 8,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   statusDate: {
     fontSize: 11,
-    color: '#999',
+    color: "#999",
     marginTop: 8,
   },
   buttonLogout: {
     borderWidth: 1,
-    borderColor: '#FF4D4D',
+    borderColor: "#FF4D4D",
     height: 48,
     borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 20,
   },
   logoutText: {
-    color: '#FF4D4D',
+    color: "#FF4D4D",
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   emptyText: {
-    textAlign: 'center',
-    color: '#999',
+    textAlign: "center",
+    color: "#999",
     marginTop: 40,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
     padding: 20,
   },
   modalContent: {
-    backgroundColor: '#FFF',
+    backgroundColor: "#FFF",
     borderRadius: 16,
     padding: 20,
     elevation: 5,
   },
   modalTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 12,
-    color: '#333',
+    color: "#333",
   },
   textInput: {
     borderWidth: 1,
-    borderColor: '#CCC',
+    borderColor: "#CCC",
     borderRadius: 8,
     padding: 12,
     height: 100,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
     marginBottom: 20,
   },
   modalButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   modalButton: {
     flex: 1,
     height: 44,
     borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonBatal: {
     marginRight: 10,
-    backgroundColor: '#F1F3F5',
+    backgroundColor: "#F1F3F5",
   },
   buttonKirim: {
-    backgroundColor: '#4A00E0',
+    backgroundColor: "#4A00E0",
   },
   buttonTextBatal: {
-    color: '#666',
-    fontWeight: '600',
+    color: "#666",
+    fontWeight: "600",
   },
   buttonTextKirim: {
-    color: '#FFF',
-    fontWeight: '600',
+    color: "#FFF",
+    fontWeight: "600",
   },
 });

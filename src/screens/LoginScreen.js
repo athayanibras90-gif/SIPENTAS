@@ -1,38 +1,33 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, Platform } from 'react-native'; // <-- Tambahin Platform di sini
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  Platform,
+} from "react-native"; // <-- Tambahin Platform di sini
+import { useNavigation } from "@react-navigation/native";
 
-export default function LoginScreen({ onBack, onLoginSuccess }) {
+export default function LoginScreen() {
+  const navigation = useNavigation();
 
-  const [nim, setNim] = useState('');
-  const [password, setPassword] = useState('');
+  const [nim, setNim] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = () => {
     // Validasi input kosong
     if (!nim || !password) {
-      if (Platform.OS === 'web') {
-        alert('NIM dan Password wajib diisi, Cuy!');
-      } else {
-        Alert.alert('Error', 'NIM dan Password wajib diisi, Cuy!');
-      }
+      Alert.alert("Error", "NIM dan Password wajib diisi, Cuy!");
       return;
     }
 
     // DUMMY DATA YANG HARUS DIISI SAMA BACKEND
-    if (nim === '123' && password === 'admin') {
-      if (Platform.OS === 'web') {
-        alert('Login Berhasil! Selamat datang di SIPENTAS.');
-        onLoginSuccess();
-      } else {
-        Alert.alert('Sukses', 'Login Berhasil! Selamat datang di SIPENTAS.', [
-          { text: 'OK', onPress: () => onLoginSuccess() } 
-        ]);
-      }
+    if (nim === "123" && password === "admin") {
+      navigation.replace("Beranda");
     } else {
-      if (Platform.OS === 'web') {
-        alert('NIM atau Password salah. Coba ketik NIM: 123, Pass: admin');
-      } else {
-        Alert.alert('Gagal', 'NIM atau Password salah');
-      }
+      Alert.alert("Error", "Login Gagal! NIM atau Password salah.");
     }
   };
 
@@ -73,9 +68,19 @@ export default function LoginScreen({ onBack, onLoginSuccess }) {
         <Text style={styles.buttonText}>Masuk Sistem</Text>
       </TouchableOpacity>
 
-      {/* Tombol Kembali Sementara */}
-      <TouchableOpacity onPress={onBack} style={styles.buttonBack}>
+      {/* Tombol ke Landing (nanti dihapus)*/}
+      {/*
+      <TouchableOpacity onPress={() => navigation.navigate("Landing")} style={styles.buttonBack}>
         <Text style={styles.backText}>{"< Kembali ke Menu Awal"}</Text>
+      </TouchableOpacity>
+      */}
+      
+      {/*Tombol ke Beranda, nanti dihapus kalo udah punya database*/}
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Beranda")}
+        style={styles.buttonBack}
+      >
+        <Text style={styles.backText}>{"Beranda >"}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -84,62 +89,62 @@ export default function LoginScreen({ onBack, onLoginSuccess }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    justifyContent: "center",
     padding: 30,
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginBottom: 30,
   },
   inputContainer: {
-    width: '100%',
+    width: "100%",
     marginBottom: 20,
   },
   label: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#4A00E0',
+    fontWeight: "600",
+    color: "#4A00E0",
     marginBottom: 8,
   },
   input: {
-    width: '100%',
+    width: "100%",
     height: 50,
     borderWidth: 1,
-    borderColor: '#DDD',
+    borderColor: "#DDD",
     borderRadius: 8,
     paddingHorizontal: 15,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: "#FAFAFA",
     fontSize: 16,
-    color: '#333',
+    color: "#333",
   },
   buttonLogin: {
-    backgroundColor: '#4A00E0',
+    backgroundColor: "#4A00E0",
     height: 50,
     borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 15,
     elevation: 2,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   buttonBack: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 25,
   },
   backText: {
-    color: '#666',
+    color: "#666",
     fontSize: 14,
   },
 });
