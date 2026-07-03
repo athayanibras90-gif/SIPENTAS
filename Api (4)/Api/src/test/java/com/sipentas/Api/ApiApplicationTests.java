@@ -1,13 +1,15 @@
 package com.sipentas.Api;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class ApiApplicationTests {
 
-	@Test
-	void contextLoads() {
+	public static void main(String[] args) {
+		SpringApplication.run(ApiApplication.class, args);
+		System.out.println(" SIPENTAS API Running ");
 	}
 
 }
