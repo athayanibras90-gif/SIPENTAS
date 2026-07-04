@@ -17,7 +17,10 @@ public class Keluhan {
     @Column(name = "is_anonim", nullable = false)
     private Boolean isAnonim;
 
-    // Relasi ke entity User
+    // ✅ TAMBAHKAN INI UNTUK GAMBAR
+    @Column(name = "gambar")
+    private String gambar;
+
     @ManyToOne
     @JoinColumn(name = "nim", referencedColumnName = "nim", nullable = false)
     private User user;
@@ -25,6 +28,7 @@ public class Keluhan {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    // ========== CONSTRUCTORS ==========
     public Keluhan() {}
 
     public Keluhan(String isiKeluhan, Boolean isAnonim, User user) {
@@ -34,7 +38,7 @@ public class Keluhan {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Getter & Setter
+    // ========== GETTER & SETTER ==========
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 
@@ -43,6 +47,10 @@ public class Keluhan {
 
     public Boolean getIsAnonim() { return isAnonim; }
     public void setIsAnonim(Boolean isAnonim) { this.isAnonim = isAnonim; }
+
+    //GETTER & SETTER UNTUK GAMBAR
+    public String getGambar() { return gambar; }
+    public void setGambar(String gambar) { this.gambar = gambar; }
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }

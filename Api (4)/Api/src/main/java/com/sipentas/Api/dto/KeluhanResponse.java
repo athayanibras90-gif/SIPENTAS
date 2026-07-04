@@ -1,23 +1,37 @@
 package com.sipentas.Api.dto;
 
-import java.time.LocalDateTime;
-
 public class KeluhanResponse {
-    private Integer id;
-    private String isiKeluhan;
-    private String pengirim; // Ini yang akan berisi NIM atau "Anonim"
-    private LocalDateTime createdAt;
 
-    public KeluhanResponse(Integer id, String isiKeluhan, String pengirim, LocalDateTime createdAt) {
-        this.id = id;
+    private String nim;
+    private String isiKeluhan;
+    private Boolean isAnonim;
+    private String createdAt;
+    private String gambar;  // ← TAMBAHKAN INI!
+
+    // ========== CONSTRUCTORS ==========
+    public KeluhanResponse() {}
+
+    public KeluhanResponse(String nim, String isiKeluhan, Boolean isAnonim, String createdAt, String gambar) {
+        this.nim = nim;
         this.isiKeluhan = isiKeluhan;
-        this.pengirim = pengirim;
+        this.isAnonim = isAnonim;
         this.createdAt = createdAt;
+        this.gambar = gambar;
     }
 
-    // Getter
-    public Integer getId() { return id; }
+    // ========== GETTER & SETTER ==========
+    public String getNim() { return nim; }
+    public void setNim(String nim) { this.nim = nim; }
+
     public String getIsiKeluhan() { return isiKeluhan; }
-    public String getPengirim() { return pengirim; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setIsiKeluhan(String isiKeluhan) { this.isiKeluhan = isiKeluhan; }
+
+    public Boolean getIsAnonim() { return isAnonim; }
+    public void setIsAnonim(Boolean isAnonim) { this.isAnonim = isAnonim; }
+
+    public String getCreatedAt() { return createdAt; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+
+    public String getGambar() { return gambar; }
+    public void setGambar(String gambar) { this.gambar = gambar; }
 }

@@ -6,9 +6,8 @@ import com.sipentas.Api.entity.User;
 import com.sipentas.Api.repository.KeluhanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class KeluhanService {
@@ -16,32 +15,27 @@ public class KeluhanService {
     @Autowired
     private KeluhanRepository keluhanRepository;
 
-    // Fungsi 1: Simpan Keluhan Baru
-    public void buatKeluhan(User user, String isi, Boolean isAnonim) {
-        Keluhan keluhanBaru = new Keluhan(isi, isAnonim, user);
-        keluhanRepository.save(keluhanBaru);
+    // ========== BUAT KELUHAN ==========
+    public void buatKeluhan(User user, String isiKeluhan, Boolean isAnonim, String gambar) {
+        Keluhan keluhan = new Keluhan(isiKeluhan, isAnonim, user);
+        keluhan.setGambar(gambar);  // ← SIMPAN NAMA GAMBAR
+        keluhanRepository.save(keluhan);
     }
 
-    // Fungsi 2: Ambil Daftar Keluhan (Sudah Disensor)
+    // ========== AMBIL SEMUA KELUHAN ==========
     public List<KeluhanResponse> ambilSemuaKeluhan() {
-        List<Keluhan> listKeluhan = keluhanRepository.findAll();
-        List<KeluhanResponse> listAman = new ArrayList<>();
+        List<Keluhan> keluhanList = keluhanRepository.findAllByOrderByCreatedAtDesc();
 
-        for (Keluhan k : listKeluhan) {
-            // LOGIKA UTAMA: Jika anonim = true, set pengirim jadi "Anonim"
-            // Jika false, tampilkan nim (misal: 13182520090)
-            String pengirim = k.getIsAnonim() ? "Anonim" : k.getUser().getNim();
+        return keluhanList.stream().map(keluhan -> {
+            String nama = keluhan.getIsAnonim() ? "Anonim" : keluhan.getUser().getNim();
 
-            KeluhanResponse response = new KeluhanResponse(
-                    k.getId(),
-                    k.getIsiKeluhan(),
-                    pengirim,
-                    k.getCreatedAt()
+            return new KeluhanResponse(
+                    nama,
+                    keluhan.getIsiKeluhan(),
+                    keluhan.getIsAnonim(),
+                    keluhan.getCreatedAt().toString(),
+                    keluhan.getGambar()  // ← TAMBAHKAN GAMBAR
             );
-
-            listAman.add(response);
-        }
-
-        return listAman;
+        }).collect(Collectors.toList());
     }
 }
