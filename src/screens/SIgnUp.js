@@ -11,11 +11,17 @@ import {
     Platform,
     ScrollView
 } from 'react-native';
+<<<<<<< HEAD
 import { useNavigation } from '@react-navigation/native';
 import { UserService } from '../services/UserService';
 
 const SignUp = () => {
     const navigation = useNavigation();
+=======
+import { UserService } from '../services/UserService';
+
+const SignUp = ({ navigation }) => {
+>>>>>>> b3c3ff00892c1dfbf989e0c1627b580dfae01967
     const [nim, setNim] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
