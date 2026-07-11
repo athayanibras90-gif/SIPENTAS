@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "625826525592",
+    "project_id": "sipentas-74f4f",
+    "storage_bucket": "sipentas-74f4f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:625826525592:android:d5d60dc52d876fae64fbed",
+        "android_client_info": {
+          "package_name": "com.anonymous.SIPENTAS"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7KGpiwVNBvLk6A8G3EL_-8-k1PA4iYA8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
