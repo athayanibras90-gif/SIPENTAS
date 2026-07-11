@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import {
   StyleSheet,
   Text,
@@ -61,11 +62,11 @@ export default function BerandaScreen() {
       <View style={styles.container}>
         <View style={styles.headerRiwayat}>
           <TouchableOpacity
-            onPress={() => setCurrentView("beranda")}
-            style={styles.backButton}
+              onPress={() => setCurrentView("beranda")}
+              style={styles.backButton}
           >
-            <Text style={styles.backIcon}>{"<"}</Text>
-          </TouchableOpacity>
+               <Ionicons name="arrow-back" size={24} color="#FFF" />
+            </TouchableOpacity>
           <Text style={styles.headerTitleRiwayat}>Riwayat Laporan Anda</Text>
         </View>
 

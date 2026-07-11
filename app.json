@@ -15,8 +15,14 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
-      }
+      },
+      "package": "com.anonymous.SIPENTAS",
+      "googleServicesFile": "./google-services.json"
     },
+    "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/messaging"
+    ],
     "web": {
       "favicon": "./assets/favicon.png"
     }
