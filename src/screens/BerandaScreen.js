@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { logout } from "../utils/storage";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function BerandaScreen() {
   const navigation = useNavigation();
@@ -87,11 +88,8 @@ export default function BerandaScreen() {
     );
   }
 
-  // ==========================================
-  // 2. TAMPILAN VIEW BERANDA UTAMA
-  // ==========================================
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* Header Wilayah Atas */}
       <View style={styles.header}>
         <Text style={styles.welcomeText}>Selamat Datang,</Text>
@@ -133,9 +131,7 @@ export default function BerandaScreen() {
         ))}
 
         <TouchableOpacity style={styles.buttonLogout} onPress={handleLogout}>
-          <Text style={styles.logoutText}>
-            Keluar
-          </Text>
+          <Text style={styles.logoutText}>Keluar</Text>
         </TouchableOpacity>
       </ScrollView>
 
@@ -171,7 +167,7 @@ export default function BerandaScreen() {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }
 

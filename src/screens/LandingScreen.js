@@ -6,7 +6,7 @@ export default function LandingScreen() {
   const navigation = useNavigation();
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.welcomeTitle}>Selamat Datang di SIPENTAS</Text>
       <Text style={styles.welcomeDesc}>
         Kelola masalah kelas dan lingkungan kampus Anda dengan lebih mudah dan cepat.
@@ -15,7 +15,7 @@ export default function LandingScreen() {
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignIn')}>
         <Text style={styles.buttonText}>Mulai Sekarang</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 

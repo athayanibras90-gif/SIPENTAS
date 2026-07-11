@@ -13,10 +13,10 @@ export default function SplashScreen() {
   }, [navigation]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.logoText}>SIPENTAS</Text>
       <ActivityIndicator size="large" color="#FFF" style={styles.loader} />
-    </View>
+    </SafeAreaView>
   );
 }
 
