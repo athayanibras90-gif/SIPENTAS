@@ -14,6 +14,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { UserService } from '../services/UserService';
 import { saveUserData, setLoggedIn } from '../utils/storage';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SignIn = () => {
     const navigation = useNavigation();
@@ -51,6 +52,7 @@ const SignIn = () => {
     };
 
     return (
+        
         <KeyboardAvoidingView
             style={styles.container}
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}

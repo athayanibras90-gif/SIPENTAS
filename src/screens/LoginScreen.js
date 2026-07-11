@@ -32,7 +32,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* Header Form */}
       <Text style={styles.title}>Masuk ke SIPENTAS</Text>
       <Text style={styles.subtitle}>Gunakan Nama atau NIM Kampus Anda</Text>
@@ -82,7 +82,7 @@ export default function LoginScreen() {
       >
         <Text style={styles.backText}>{"Beranda >"}</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
