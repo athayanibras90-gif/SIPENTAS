@@ -7,27 +7,50 @@ import {
   TouchableOpacity,
   Alert,
   Platform,
+  SafeAreaView,
+  ActivityIndicator,
 } from "react-native"; // <-- Tambahin Platform di sini
 import { useNavigation } from "@react-navigation/native";
+import { UserService } from "../services/UserService";
+import { saveUserData, setLoggedIn, saveToken } from "../utils/storage";
 
 export default function LoginScreen() {
   const navigation = useNavigation();
 
   const [nim, setNim] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     // Validasi input kosong
     if (!nim || !password) {
       Alert.alert("Error", "NIM dan Password wajib diisi, Cuy!");
       return;
     }
+    
+    setLoading(true);
 
-    // DUMMY DATA YANG HARUS DIISI SAMA BACKEND
-    if (nim === "123" && password === "admin") {
-      navigation.replace("Beranda");
-    } else {
-      Alert.alert("Error", "Login Gagal! NIM atau Password salah.");
+    try {
+      const response = await UserService.login(nim, password);
+
+      if (response && response.success !== false) {
+        if (response.token) {
+          await saveToken(response.token);
+        }
+        if (response.user) {
+          await saveUserData(response.user);
+        }
+        await setLoggedIn(true);
+
+        navigation.replace("Beranda");
+      } else {
+        Alert.alert("Error", response.message || "Login Gagal! NIM atau Password salah.");
+      }
+    } catch (error) {
+      console.error("Login process error:", error);
+      Alert.alert("Error", "Terjadi kesalahan jaringan atau server.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -64,8 +87,16 @@ export default function LoginScreen() {
       </View>
 
       {/* Tombol Login */}
-      <TouchableOpacity style={styles.buttonLogin} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Masuk Sistem</Text>
+      <TouchableOpacity
+        style={[styles.buttonLogin, loading && { opacity: 0.7 }]}
+        onPress={handleLogin}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Masuk Sistem</Text>
+        )}
       </TouchableOpacity>
 
       {/* Tombol ke Landing (nanti dihapus)*/}
