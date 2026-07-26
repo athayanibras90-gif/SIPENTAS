@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { UserService } from "../services/UserService";
-import { saveUserData, setLoggedIn } from "../utils/storage";
+import { saveUserData, setLoggedIn, saveToken } from "../utils/storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const SignIn = () => {
@@ -36,7 +36,10 @@ const SignIn = () => {
       setLoading(false);
 
       if (result.success) {
-        await saveUserData({ nim });
+        await saveUserData({ nim, ...result.data, ...result.user });
+        if (result.token) {
+          await saveToken(result.token);
+        }
         await setLoggedIn(true);
 
         Alert.alert("Sukses", "Login berhasil!");

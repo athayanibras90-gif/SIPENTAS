@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import SplashScreen from '../screens/SplashScreen';
-import LandingScreen from '../screens/LandingScreen';
-import LoginScreen from '../screens/LoginScreen';
 import SignIn from '../screens/SignIn';
 import SignUp from '../screens/SIgnUp';
 import BerandaScreen from '../screens/BerandaScreen';
@@ -38,8 +36,6 @@ const Navigation = () => {
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="Splash" component={SplashScreen} />
-      <Stack.Screen name="Landing" component={LandingScreen} />
-      <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="SignIn" component={SignIn} />
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="Beranda" component={BerandaScreen} />
